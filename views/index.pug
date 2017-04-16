@@ -1,5 +1,12 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  div(class="login") 
+    input(type="text" class="input-field" placeholder="Enter Username" maxlength="12" ng-model="existingUser.usn")
+    input(type="password" class="input-field" placeholder="Enter Password" maxlength="16" ng-model="existingUser.pwd") 
+    button Login!
+  div(class="register") 
+    input(type="text" class="input-field" placeholder="Enter New Username" maxlength="12" ng-model="newUser.usn") 
+    input(type="password" class="input-field" placeholder="Enter New Password" maxlength="16" ng-model="newUser.pwd") 
+    input(type="password" class="input-field" placeholder="Confirm New Password" maxlength="16" ng-model="newUser.pwd2") 
+    button Register!
