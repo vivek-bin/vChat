@@ -8,6 +8,15 @@ angular.module('MyApp')
 	LoginService.signUp = function(userCreds){
 		return $http.post('/users/signup',userCreds);
 	};
+	LoginService.signOut = function(){
+		$http.get('/users/signout')
+		.then(function(data){
+			$rootScope.user={};
+			$location.path = '/';
+		},function(error){
+			console.log('AJAX failed during signout');
+		});
+	};
 	LoginService.userAuthenticated = function(user){
 		if(user){
 			$rootScope.user=user;
@@ -21,10 +30,6 @@ angular.module('MyApp')
 .service('ChatService',function($http,$rootScope){
 	var ChatService=this;
 	
-	var socket = io.connect();
-	
-	socket.emit('socket-init',{id: $rootScope.user.id});
-	
 	ChatService.chats = [];
 	var chat = {
 		name: "",
@@ -35,20 +40,32 @@ angular.module('MyApp')
 		sentAt: "",
 		sentByUser: true    //true = sent, false = recieved
 	};
-	
-	ChatService.sendMessage = function(message){
-		message.sentBy = $rootScope.user.id;
-		message.sentAt = new Date();
-		socket.emit('message',message);
-	};
-	
-	socket.on('message',function(message){
-		
-		
-	});
-	
+
 	ChatService.getNameList = function(searchField){
 		return $http.get('chat/:'&searchField);
 	}
+
+})
+
+.service('SocketService',function($http,$rootScope){
+	var SocketService=this;
+	
+	var socket = io.connect();
+	
+	socket.emit('socket-init',{id: $rootScope.user.id});
+	
+	SocketService.sendMessage = function(message){
+		message.sentBy = $rootScope.user.id;
+		
+		socket.emit('message',message);
+	};
+	
+	SocketService.newMessage = function(callback){
+		if(callback){
+			$rootScope.$apply(function(){
+					socket.on('message',callback);
+			})
+		}
+	};
 
 })

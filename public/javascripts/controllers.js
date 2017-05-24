@@ -24,6 +24,10 @@ angular.module('ChatApp')
 		});
 	};
 	
+	$scope.signOut=function(){
+		LoginService.signOut();
+	};
+	
 	$scope.signUp=function(){
 		if($scope.newUser.usn.length<3){
 			return $scope.newUser.err="Username too short";
@@ -46,17 +50,7 @@ angular.module('ChatApp')
 	};
 })
 
-.controller('ChatCtrllr',function($scope,ChatService){
-	var message={
-		text: "",
-		sentAt: ""
-	};
-	var chat={
-		name: "",
-		newMessageFlag: false,
-		messages: []
-	};
-	
+.controller('ChatCtrllr',function($scope,ChatService,SocketService){
 	$scope.searchedNameList = {};
 	var searchAvailable = true;
 	$scope.searchNames = function(searchField){
@@ -77,15 +71,29 @@ angular.module('ChatApp')
 		});
 	};
 	
+	var currentChatId = "";
+	$scope.chats=[];
+	
 	$scope.sendMessage = function(message){
 		var chatMessage = {
 			message: message,
-			sentTo: $scope.currentChatId
+			sentTo: currentChatId,
+			sentAt: new Date()
 		};
-		ChatService.sendMessage(chatMessage);
+		$scope.chats[chatMessage.sentTo].messages.push({
+			text: chatMessage.message,
+			sentAt: chatMessage.sentAt,
+			recievedMsg: false
+		});
+		SocketService.sendMessage(chatMessage);
 	};
 	
-	$scope.currentChatId = "";
+	SocketService.newMessage(function(data){
+		$scope.chats[data.sentBy].messages.push({
+			text: data.text,
+			sentAt: data.sentAt,
+			recievedMsg: true
+		});
+	});
 	
-	$scope.chats=[];
 })
