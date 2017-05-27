@@ -15,6 +15,7 @@ mongoose.connect('mongodb://user:password@ds147681.mlab.com:47681/vchat');
 
 var index = require('./routes/index');
 var users = require('./routes/users')(passport);
+var api = require('./routes/api');
 
 var app = express();
 
@@ -38,6 +39,7 @@ require('./config/socket-config.js')(io);
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/api',api);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

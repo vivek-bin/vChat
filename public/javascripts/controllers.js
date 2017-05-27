@@ -15,7 +15,7 @@ angular.module('ChatApp')
 	$scope.signIn=function(){
 		LoginService.signIn({username: $scope.existingUser.usn, password: $scope.existingUser.pwd})
 		.then(function(data){
-			if(res.data.message){
+			if(data.message){
 				$scope.existingUser.err = data.message;
 			}
 			LoginService.userAuthenticated(data.user);

@@ -20,7 +20,7 @@ angular.module('MyApp')
 	LoginService.userAuthenticated = function(user){
 		if(user){
 			$rootScope.user=user;
-			$location.path = '/chat';
+			$location.path = '/api/chat';
 			return true;
 		}
 		return false;
@@ -42,7 +42,7 @@ angular.module('MyApp')
 	};
 
 	ChatService.getNameList = function(searchField){
-		return $http.get('chat/:'&searchField);
+		return $http.get('api/search/:'&searchField);
 	}
 
 })
