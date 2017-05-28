@@ -3,18 +3,13 @@ var mongoose = require('mongoose');
 
 var router = express.Router();
 
-/* GET home page. */
-router.get('/mainpage', function(req, res) {
-  res.render('chat', { title: 'vChat' });
-});
-
-router.get('/search/:searchField',function(req,res){
+router.get('/search',function(req,res){
 	mongoose.model('User')
-	.find({ 'username': new RegExp (search, 'i') }, 'username', function(err,users){
+	.find({ 'username': new RegExp (req.query.searchField, 'i') }, 'username', function(err,data){
 		if(err){
 			res.send(err);
 		}
-		res.send({users: users});
+		res.send({users: data.users});
 	})
 	.limit(15);
 });

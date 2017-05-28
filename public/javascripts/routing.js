@@ -4,11 +4,11 @@ angular.module('ChatApp')
 	
 	$routeProvider
 	.when('/',{
-		templateUrl:'/',
+		templateUrl:'views/index',
 		controller:'LoginCtrllr'
 	})
 	.when('/chat',{
-		templateUrl:'/api/chat',
+		templateUrl:'views/chat',
 		controller:'ChatCtrllr'
 	})
 	.otherwise({

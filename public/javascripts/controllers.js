@@ -14,11 +14,11 @@ angular.module('ChatApp')
 	
 	$scope.signIn=function(){
 		LoginService.signIn({username: $scope.existingUser.usn, password: $scope.existingUser.pwd})
-		.then(function(data){
-			if(data.message){
-				$scope.existingUser.err = data.message;
+		.then(function(res){
+			if(res.data.message){
+				$scope.existingUser.err = res.data.message;
 			}
-			LoginService.userAuthenticated(data.user);
+			LoginService.userAuthenticated(res.data.user);
 		},function(error){
 			console.log('AJAX failed during signin');
 		});
@@ -39,11 +39,11 @@ angular.module('ChatApp')
 			return $scope.newUser.err="Passwords not same";
 		}
 		LoginService.signUp({username: $scope.newUser.usn, password: $scope.newUser.pwd})
-		.then(function(data){
-			if(data.message){
-				$scope.existingUser.err = data.message;
+		.then(function(res){
+			if(res.data.message){
+				$scope.newUser.err = res.data.message;
 			}
-			LoginService.userAuthenticated(data.user);
+			LoginService.userAuthenticated(res.data.user);
 		},function(error){
 			console.log('AJAX failed during signup');
 		});
@@ -52,8 +52,9 @@ angular.module('ChatApp')
 
 .controller('ChatCtrllr',function($scope,ChatService,SocketService){
 	$scope.searchedNameList = {};
+	$scope.searchField = "";
 	var searchAvailable = true;
-	$scope.searchNames = function(searchField){
+	$scope.searchNames = function(){
 		if(!searchAvailable){
 			return;
 		}
@@ -62,10 +63,10 @@ angular.module('ChatApp')
 		setTimeout(function(){
 			searchAvailable = true;
 		},1500);
-		
-		ChatService.getNameList(searchField)
+		console.log('getting names list')
+		ChatService.getNameList($scope.searchField)
 		.then(function(data){
-			$scope.searchedNameList = data;
+			$scope.searchedNameList = data.users;
 		},function(err){
 			console.log("error getting names list")
 		});

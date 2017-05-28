@@ -1,4 +1,4 @@
-angular.module('MyApp')
+angular.module('ChatApp')
 .service('LoginService',function($http,$location,$rootScope){
 	var LoginService=this;
 	
@@ -10,9 +10,9 @@ angular.module('MyApp')
 	};
 	LoginService.signOut = function(){
 		$http.get('/users/signout')
-		.then(function(data){
+		.then(function(res){
 			$rootScope.user={};
-			$location.path = '/';
+			$location.path('/');
 		},function(error){
 			console.log('AJAX failed during signout');
 		});
@@ -20,7 +20,7 @@ angular.module('MyApp')
 	LoginService.userAuthenticated = function(user){
 		if(user){
 			$rootScope.user=user;
-			$location.path = '/api/chat';
+			$location.path('/chat');
 			return true;
 		}
 		return false;
@@ -42,13 +42,17 @@ angular.module('MyApp')
 	};
 
 	ChatService.getNameList = function(searchField){
-		return $http.get('api/search/:'&searchField);
+		return $http.get('/api/search',{params:{searchField:searchField}});
 	}
 
 })
 
-.service('SocketService',function($http,$rootScope){
+.service('SocketService',function($http,$rootScope,$location){
 	var SocketService=this;
+	
+	if(! $rootScope.user){
+		$location.path('/');
+	}
 	
 	var socket = io.connect();
 	
@@ -62,9 +66,9 @@ angular.module('MyApp')
 	
 	SocketService.newMessage = function(callback){
 		if(callback){
-			$rootScope.$apply(function(){
+			//$rootScope.$apply(function(){
 					socket.on('message',callback);
-			})
+			//})
 		}
 	};
 

@@ -16,6 +16,7 @@ mongoose.connect('mongodb://user:password@ds147681.mlab.com:47681/vchat');
 var index = require('./routes/index');
 var users = require('./routes/users')(passport);
 var api = require('./routes/api');
+var viewRender = require('./routes/view-render');
 
 var app = express();
 
@@ -26,20 +27,20 @@ app.set('view engine', 'pug');
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
-app.use(session({secret:'hmmmm'}));
+app.use(session({ secret: 'hmmmm' }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
 app.use(passport.initialize());
 app.use(passport.session());
 
 require('./config/passport-config.js')(passport);
-require('./config/socket-config.js')(io);
 
 app.use('/', index);
 app.use('/users', users);
 app.use('/api',api);
+app.use('/views',viewRender);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -59,6 +60,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-io.listen(app.listen(8081));
+var server = io(app.listen(8081));
+require('./config/socket-config.js')(server);
 
 module.exports = app;

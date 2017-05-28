@@ -1,6 +1,4 @@
-extends layout
-
-block content
+div
   div(class="chatter-list") 
     div(class="chatter") 
       div 123456789012
@@ -38,5 +36,6 @@ block content
   textarea(class="chat-input" placeholder="..." maxlength="150" autofocus)
   
   div(class="search") 
-    input(type="text" class="search-field" placeholder="Search Username" maxlength="12")
+    input(type="text" class="search-field" placeholder="Search Username" maxlength="12" ng-model="searchField" ng-change="searchNames()")
+    div(ng-repeat="names in searchedNameList" ) {{ names }}
   
