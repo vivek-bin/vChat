@@ -11,7 +11,7 @@ angular.module('ChatApp')
 	LoginService.signOut = function(){
 		$http.get('/users/signout')
 		.then(function(res){
-			$rootScope.user={};
+			$rootScope.user=undefined;
 			$location.path('/');
 		},function(error){
 			console.log('AJAX failed during signout');
@@ -19,7 +19,7 @@ angular.module('ChatApp')
 	};
 	LoginService.userAuthenticated = function(user){
 		if(user){
-			$rootScope.user=user;
+			$rootScope.user=user.username;
 			$location.path('/chat');
 			return true;
 		}
@@ -29,17 +29,6 @@ angular.module('ChatApp')
 
 .service('ChatService',function($http,$rootScope){
 	var ChatService=this;
-	
-	ChatService.chats = [];
-	var chat = {
-		name: "",
-		messages:[]
-	};
-	var message = {
-		messageText:"",
-		sentAt: "",
-		sentByUser: true    //true = sent, false = recieved
-	};
 
 	ChatService.getNameList = function(searchField){
 		return $http.get('/api/search',{params:{searchField:searchField}});
@@ -49,27 +38,39 @@ angular.module('ChatApp')
 
 .service('SocketService',function($http,$rootScope,$location){
 	var SocketService=this;
+
+	var socket={on: function(){},emit: function(){}};
 	
-	if(! $rootScope.user){
-		$location.path('/');
-	}
+	SocketService.sendMessage;
+	SocketService.newMessage;
 	
-	var socket = io.connect();
-	
-	socket.emit('socket-init',{id: $rootScope.user.id});
-	
-	SocketService.sendMessage = function(message){
-		message.sentBy = $rootScope.user.id;
+	SocketService.initSocket = function(){
+		if(! $rootScope.user){
+			$location.path('/');
+			return false;
+		}
+		else{
+			socket = io.connect();
+			socket.emit('socket-init',{id: $rootScope.user});
+			
+			
+			SocketService.sendMessage = function(message){
+				message.sentBy = $rootScope.user;
 		
-		socket.emit('message',message);
-	};
+				socket.emit('message',message);
+			};
 	
-	SocketService.newMessage = function(callback){
-		if(callback){
-			//$rootScope.$apply(function(){
-					socket.on('message',callback);
-			//})
+			SocketService.newMessage = function(callback){
+				if(callback){
+					//$rootScope.$apply(function(){
+							socket.on('message',callback);
+					//})
+				}
+			};
+			
+			return true;
 		}
 	};
+	
 
 })

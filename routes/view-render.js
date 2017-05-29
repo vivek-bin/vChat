@@ -7,7 +7,7 @@ router.get('/index', function(req, res) {
 });
 
 router.use(function (req, res, next) {
-	//is authenticated, allow
+	//if authenticated, allow
 	if(req.isAuthenticated()){
 		return next();
 	}
