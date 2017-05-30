@@ -50,86 +50,95 @@ angular.module('ChatApp')
 	};
 })
 
-.controller('ChatCtrllr',function($scope,ChatService,SocketService){
+.controller('ChatCtrllr',function($scope,$timeout,ChatService,SocketService){
+	var createChat = function(username){
+		if($scope.chats[username]){
+			return false;
+		}
+		$scope.chats[username]={
+			messages: [],
+			status: 0, 
+			messageWaiting: false
+		};
+		return true;
+	};
+	
 	if(SocketService.initSocket()){
-		$scope.sendMessage = function(message){
+		$scope.sendMessage = function(){
+			if($scope.inputMessage === ""){return;}
 			var chatMessage = {
-				message: message,
-				sentTo: currentChatId,
+				message: $scope.inputMessage,
+				sentTo: $scope.currentChatId,
 				sentAt: new Date()
 			};
 			$scope.chats[chatMessage.sentTo].messages.push({
-				text: chatMessage.message,
+				messageText: chatMessage.message,
 				sentAt: chatMessage.sentAt,
-				recievedMsg: false
+				sentByUser: true
 			});
+			$scope.inputMessage = "";
 			SocketService.sendMessage(chatMessage);
 		};
 	
 		SocketService.newMessage(function(data){
+			createChat(data.sentBy);
+			if(data.sentBy != $scope.currentChatId){
+				$scope.chats[data.sentBy].messageWaiting = true;
+			}
 			$scope.chats[data.sentBy].messages.push({
-				text: data.text,
+				messageText: data.message,
 				sentAt: data.sentAt,
-				recievedMsg: true
+				sentByUser: false
 			});
+			$timeout();
 		});
 	}
 	
-	
 	var searchAvailable = true;
-	$scope.search={
-		nameList:{},
+	$scope.search = {
+		nameList: {},
 		field: "",
-		searchNames: {}
-	};
-	$scope.search.searchNames = function(){
-		if(!searchAvailable){
-			return;
-		}
-		if($scope.search.field.length < 2){
-			$scope.search.nameList=[];
-			return;
-		}
-		searchAvailable = false;
+		searchNames: function(){
+			if(!searchAvailable){
+				return;
+			}
+			if($scope.search.field.length < 2){
+				$scope.search.nameList=[];
+				return;
+			}
+			searchAvailable = false;
 		
-		setTimeout(function(){
-			searchAvailable = true;
-		},1500);
+			setTimeout(function(){
+				searchAvailable = true;
+			},1500);
 		
-		console.log('getting names list')
-		ChatService.getNameList($scope.search.field)
-		.then(function(res){
-			$scope.search.nameList = res.data.users;
-		},function(err){
-			console.log("error getting names list")
-		});
+			ChatService.getNameList($scope.search.field)
+			.then(function(res){
+				$scope.search.nameList = res.data.users;
+			},function(err){
+				console.log("error getting names list")
+			});
+		}
 	};
 	
+	$scope.inputMessage = "";
 	$scope.currentChatId = "";
-	$scope.chats={};
-	var chat = {
-		messages: [],
-		status: 0, 
-		messageWaiting: false
-	};
-	
-	var message = {
-		messageText: "",
-		sentAt: "",
-		sentByUser: true    //true = sent, false = recieved
-	};
+	$scope.chats = {};
 	
 	$scope.switchChat = function(username){
-		currentChatId = username;
+		$scope.currentChatId = username;
+		$scope.chats[username].messageWaiting = false;
 	};
 	
 	$scope.newChat = function(username){
-		if($scope.chats[username]){
-			console.log('already chatting');
-		}
-		var newChat = chat;
-		$scope.chats[username]=newChat;
+		createChat(username);
 		$scope.switchChat(username);
+		$scope.search.nameList = [];
+		$scope.search.field = "";
+	};
+	
+	$scope.closeChat = function(username){
+		delete $scope.chats[username];
 	};
 	
 })

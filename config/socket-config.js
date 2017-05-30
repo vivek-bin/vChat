@@ -8,7 +8,7 @@ module.exports = function(io){
 		
 		socket.on('message',function(data){
 			if(connectedUsers[data.sentTo]){
-				socket(connectedUsers[data.sentTo]).emit('message',data);
+				io.to(connectedUsers[data.sentTo]).emit('message',data);
 			}
 		});
 		

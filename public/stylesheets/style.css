@@ -69,15 +69,19 @@ button{
 	overflow-x: hidden;
 	overflow-y: auto;
 }
-.chatter{
+.chatter,.chatter-current{
 	position: relative;
-	width: 84%;
 	height: 8%;
 	padding-top: 10%;
 	padding-left: 15%;
 	background-color: #aaa;
-	margin: 2px 2px;
+	margin: 2% 2%;
 }
+
+.chatter-current{
+	background-color: #ea0;
+}
+
 .chatter-waiting{
 	position: absolute;
 	top: 50%;
@@ -89,14 +93,14 @@ button{
 	position: absolute;
 	top: 50%;
 	left: 2%;
-	transform: translateY(-50%);
-	background-color: #f00;	
+	transform: translateY(-50%);	
 	border-radius: 50%;
 	height: 15px;
 	width: 13px;
 	font-size: 15px;
 	padding-left: 2px;
 	overflow: hidden;
+	background-image: url("../images/closeConv.jpg");
 }
 
 .chat{
@@ -118,6 +122,7 @@ button{
 	background-color: #ccc;
 	padding: 1em;
 	overflow-y: auto;
+	resize: none;
 }
 
 .search{
@@ -135,6 +140,12 @@ button{
 	width: 84.5%;
 	padding: 5% 5%;
 	border-width: 4px;
+}
+
+.search-name{
+	padding: 3% 3% 3% 10%;
+	background-color: #aaa;
+	margin: 3% 3%;
 }
 
 .user-textbox,.chatter-textbox{

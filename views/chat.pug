@@ -1,25 +1,16 @@
 div
   div(class="chatter-list") 
-    div(ng-repeat="(username,chat) in chats" class="chatter" ng-click="switchChat(username)") 
+    div(ng-repeat="(username,chat) in chats" ng-class="username == currentChatId ? 'chatter-current' : 'chatter'" ng-click="switchChat(username)") 
       div {{  username  }}
-      div(class="chatter-close") X
+      div(class="chatter-close" ng-click="closeChat(username)")
       div(ng-show="chat.messageWaiting" class="chatter-waiting") 〈
-    div(class="chatter") 
-      div 123456789012
-      div(class="chatter-close") X
-      div(class="chatter-waiting") 〈
 
-  div(class="chat") 
-    div(class="user-textbox") uuuuuuuuuuuu
-    div(class="chatter-textbox") ccccccccccc
-    div(class="user-textbox") uu
-    div(class="chatter-textbox") cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc ccccc ccccccccccccccccccccccccccccccccc
-    div(class="user-textbox") 11111111
-    div(class="user-textbox") uuuuuuuuuuuu
-    div(class="chatter-textbox") cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc ccccc ccccccccccccccccccccccccccccccccc
-    div(ng-repeat="message in chats[currentUserId]" ng-class="message.sentByUser ? 'user-textbox' : 'chatter-textbox'") {{ message.messageText }}
-  textarea(class="chat-input" placeholder="..." maxlength="150" autofocus)
+  div(class="chat")
+    div(ng-repeat="message in chats[currentChatId].messages" ng-class="message.sentByUser ? 'user-textbox' : 'chatter-textbox'") {{ message.messageText }}
+  form
+    input(type="submit" style="display: none")
+    textarea(class="chat-input" placeholder="..." maxlength="200" autofocus ng-model="inputMessage" ng-keyup="$event.keyCode == 13 ? sendMessage() : null")
 
   div(class="search") 
     input(type="text" class="search-field" placeholder="Search Username" maxlength="12" ng-model="search.field" ng-change="search.searchNames()")
-    div(ng-repeat="name in search.nameList" ng-click="newChat(name.username)" ) {{ name.username }}
+    div(ng-repeat="name in search.nameList" ng-click="newChat(name.username)" class="chatter search-name") {{ name.username }}

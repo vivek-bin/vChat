@@ -53,7 +53,6 @@ angular.module('ChatApp')
 			socket = io.connect();
 			socket.emit('socket-init',{id: $rootScope.user});
 			
-			
 			SocketService.sendMessage = function(message){
 				message.sentBy = $rootScope.user;
 		
@@ -62,9 +61,7 @@ angular.module('ChatApp')
 	
 			SocketService.newMessage = function(callback){
 				if(callback){
-					//$rootScope.$apply(function(){
-							socket.on('message',callback);
-					//})
+					socket.on('message',callback);
 				}
 			};
 			

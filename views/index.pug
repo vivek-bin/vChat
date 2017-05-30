@@ -1,12 +1,14 @@
 
 div(class="login") 
-  input(type="text" class="input-field" placeholder="Username" maxlength="12" ng-model="existingUser.usn")
-  input(type="password" class="input-field" placeholder="Password" maxlength="16" ng-model="existingUser.pwd") 
-  button(ng-click = "signIn()") Sign In!
-  div(class="error-field") {{ existingUser.err }}
+  form
+    input(type="text" class="input-field" placeholder="Username" maxlength="12" ng-model="existingUser.usn" autofocus)
+    input(type="password" class="input-field" placeholder="Password" maxlength="16" ng-model="existingUser.pwd") 
+    button(type="button" ng-click = "signIn()") Sign In!
+    div(class="error-field") {{ existingUser.err }}
 div(class="register") 
-  input(type="text" class="input-field" placeholder="Username" maxlength="12" ng-model="newUser.usn") 
-  input(type="password" class="input-field" placeholder="Password" maxlength="16" ng-model="newUser.pwd") 
-  input(type="password" class="input-field" placeholder="Confirm Password" maxlength="16" ng-model="newUser.pwd2") 
-  button(ng-click = "signUp()") Sign Up!
-  div(class="error-field") {{ newUser.err }}
+  form
+    input(type="text" class="input-field" placeholder="Username" maxlength="12" ng-model="newUser.usn") 
+    input(type="password" class="input-field" placeholder="Password" maxlength="16" ng-model="newUser.pwd") 
+    input(type="password" class="input-field" placeholder="Confirm Password" maxlength="16" ng-model="newUser.pwd2") 
+    button(type="button" ng-click = "signUp()") Sign Up!
+    div(class="error-field") {{ newUser.err }}
