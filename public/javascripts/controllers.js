@@ -69,11 +69,14 @@ angular.module('ChatApp')
 			var chatMessage = {
 				message: $scope.inputMessage,
 				sentTo: $scope.currentChatId,
-				sentAt: new Date()
+				sentAt: new Date().getTime()
 			};
+			var sentAt = new Date(chatMessage.sentAt);
+			var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+			var time = monthNames[sentAt.getMonth()] + ' ' + sentAt.getDate() + ', ' + sentAt.getHours() + ':' + sentAt.getMinutes() + ':' + sentAt.getSeconds();
 			$scope.chats[chatMessage.sentTo].messages.push({
 				messageText: chatMessage.message,
-				sentAt: chatMessage.sentAt,
+				sentAt: time,
 				sentByUser: true
 			});
 			$scope.inputMessage = "";
@@ -85,9 +88,12 @@ angular.module('ChatApp')
 			if(data.sentBy != $scope.currentChatId){
 				$scope.chats[data.sentBy].messageWaiting = true;
 			}
+			var sentAt = new Date(data.sentAt);
+			var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+			var time = monthNames[sentAt.getMonth()] + ' ' + sentAt.getDate() + ', ' + sentAt.getHours() + ':' + sentAt.getMinutes() + ':' + sentAt.getSeconds();
 			$scope.chats[data.sentBy].messages.push({
 				messageText: data.message,
-				sentAt: data.sentAt,
+				sentAt: time,
 				sentByUser: false
 			});
 			$timeout();

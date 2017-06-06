@@ -9,6 +9,11 @@ router.get('/search',function(req,res){
 		if(err){
 			res.send(err);
 		}
+		for(var i=0;i<data.length;++i){
+			if(data[i].username===req.user.username){
+				data.splice(i,1);
+			}
+		}
 		res.send({users: data});
 	})
 	.limit(15);

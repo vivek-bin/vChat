@@ -76,6 +76,7 @@ button{
 	padding-left: 15%;
 	background-color: #aaa;
 	margin: 2% 2%;
+	user-select: none;
 }
 
 .chatter-current{
