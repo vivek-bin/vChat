@@ -7,6 +7,7 @@ div
 
   div(class="chat")
     div(ng-repeat="message in chats[currentChatId].messages" ng-class="message.sentByUser ? 'user-textbox' : 'chatter-textbox'") {{ message.messageText }}
+       div(class="textbox-timebox") {{ message.sentAt }}
   form
     input(type="submit" style="display: none")
     textarea(class="chat-input" placeholder="..." maxlength="200" autofocus ng-model="inputMessage" ng-keyup="$event.keyCode == 13 ? sendMessage() : null")

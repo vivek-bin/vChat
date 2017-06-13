@@ -1,3 +1,4 @@
+var mongoose = require('mongoose');
 
 module.exports = function(io){
 	var connectedUsers={};
@@ -7,13 +8,14 @@ module.exports = function(io){
 		});
 		
 		socket.on('message',function(data){
-			var message = new mongoose.model('Message')();
-			message.text = data.message;
-			message.sentBy = data.sentBy;
-			message.sentTo = data.sentTo;
-			message.sentAt = data.sentAt;
+			var Message = mongoose.model('Message');
+			var newMessage = new Message();
+			newMessage.message = data.message;
+			newMessage.sentBy = data.sentBy;
+			newMessage.sentTo = data.sentTo;
+			newMessage.sentAt = data.sentAt;
 			
-			message.save(function(err) {
+			newMessage.save(function(err) {
 				if (err){
 					console.log('Error in Saving message');  
 				}

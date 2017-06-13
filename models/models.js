@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');
 
 mongoose.model('Message', new mongoose.Schema({
-	sentBy: mongoose.Schema.Types.ObjectId,
-	sentTo: mongoose.Schema.Types.ObjectId,
+	sentBy: String,
+	sentTo: String,
 	sentAt: {type: Date, default: Date.now},
 	text: String
 }));
