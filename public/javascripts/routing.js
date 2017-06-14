@@ -9,7 +9,14 @@ angular.module('ChatApp')
 	})
 	.when('/chat',{
 		templateUrl:'views/chat',
-		controller:'ChatCtrllr'
+		controller:'ChatCtrllr',
+		resolve: {
+			check: function($location, $rootScope){
+				if(! $rootScope.user){
+					$location.path('/');
+				}
+			}
+		}
 	})
 	.otherwise({
 		redirectTo:'/'

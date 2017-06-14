@@ -169,3 +169,10 @@ button{
 .textbox-timebox{
 	font-size: 0.6em;
 }
+
+.load-earlier-button{
+	width: 100%;
+	font-size: 1em;
+	text-align: center;
+	border-radius: 1em;
+}

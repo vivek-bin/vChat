@@ -50,7 +50,11 @@ angular.module('ChatApp')
 	};
 })
 
-.controller('ChatCtrllr',function($scope,$timeout,ChatService,SocketService){
+.controller('ChatCtrllr',function($scope,$timeout,SocketService){
+	if(! SocketService.initSocket()){
+		return this;
+	}
+	
 	var createChat = function(username){
 		if($scope.chats[username]){
 			return false;
@@ -63,68 +67,11 @@ angular.module('ChatApp')
 		return true;
 	};
 	
-	if(SocketService.initSocket()){
-		$scope.sendMessage = function(){
-			if($scope.inputMessage === ""){return;}
-			var chatMessage = {
-				message: $scope.inputMessage,
-				sentTo: $scope.currentChatId,
-				sentAt: new Date().getTime()
-			};
-			var sentAt = new Date(chatMessage.sentAt);
-			var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-			var time = monthNames[sentAt.getMonth()] + ' ' + sentAt.getDate() + ', ' + sentAt.getHours() + ':' + sentAt.getMinutes() + ':' + sentAt.getSeconds();
-			$scope.chats[chatMessage.sentTo].messages.push({
-				messageText: chatMessage.message,
-				sentAt: time,
-				sentByUser: true
-			});
-			$scope.inputMessage = "";
-			SocketService.sendMessage(chatMessage);
-		};
-	
-		SocketService.newMessage(function(data){
-			createChat(data.sentBy);
-			if(data.sentBy != $scope.currentChatId){
-				$scope.chats[data.sentBy].messageWaiting = true;
-			}
-			var sentAt = new Date(data.sentAt);
-			var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-			var time = monthNames[sentAt.getMonth()] + ' ' + sentAt.getDate() + ', ' + sentAt.getHours() + ':' + sentAt.getMinutes() + ':' + sentAt.getSeconds();
-			$scope.chats[data.sentBy].messages.push({
-				messageText: data.message,
-				sentAt: time,
-				sentByUser: false
-			});
-			$timeout();
-		});
-	}
-	
-	var searchAvailable = true;
-	$scope.search = {
-		nameList: {},
-		field: "",
-		searchNames: function(){
-			if(!searchAvailable){
-				return;
-			}
-			if($scope.search.field.length < 2){
-				$scope.search.nameList=[];
-				return;
-			}
-			searchAvailable = false;
-		
-			setTimeout(function(){
-				searchAvailable = true;
-			},1500);
-		
-			ChatService.getNameList($scope.search.field)
-			.then(function(res){
-				$scope.search.nameList = res.data.users;
-			},function(err){
-				console.log("error getting names list")
-			});
-		}
+	var getTimeStamp = function(time){
+		var newDate = new Date(time);
+		var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+		var timeStamp = monthNames[newDate.getMonth()] + ' ' + newDate.getDate() + ', ' + newDate.getHours() + ':' + newDate.getMinutes() + ':' + newDate.getSeconds();
+		return timeStamp;
 	};
 	
 	$scope.inputMessage = "";
@@ -144,7 +91,66 @@ angular.module('ChatApp')
 	};
 	
 	$scope.closeChat = function(username){
+		if(username === $scope.currentChatId){$scope.currentChatId = "";}
 		delete $scope.chats[username];
 	};
+	
+	$scope.sendMessage = function(){
+		if($scope.inputMessage === "" || $scope.currentChatId === ""){
+			$scope.inputMessage = "";
+			return;
+		}
+		var chatMessage = {
+			message: $scope.inputMessage,
+			sentTo: $scope.currentChatId,
+			sentAt: new Date().getTime()
+		};
+		$scope.chats[chatMessage.sentTo].messages.push({
+			messageText: chatMessage.message,
+			sentAt: getTimeStamp(chatMessage.sentAt),
+			sentByUser: true
+		});
+		$scope.inputMessage = "";
+		SocketService.sendMessage(chatMessage);
+	};
+
+	SocketService.newMessage(function(data){
+		createChat(data.sentBy);
+		if(data.sentBy != $scope.currentChatId){
+			$scope.chats[data.sentBy].messageWaiting = true;
+		}
+		$scope.chats[data.sentBy].messages.push({
+			messageText: data.message,
+			sentAt: getTimeStamp(data.sentAt),
+			sentByUser: false
+		});
+		$timeout();
+	});
+
+	var searchAvailable = true;
+	$scope.search = {
+		nameList: {},
+		field: "",
+		searchNames: function(){
+			if(!searchAvailable){
+				return;
+			}
+			if($scope.search.field.length < 2){
+				$scope.search.nameList=[];
+				return;
+			}
+			searchAvailable = false;
+		
+			setTimeout(function(){
+				searchAvailable = true;
+			},1000);
+			SocketService.sendSearchRequest($scope.search.field);
+		}
+	};
+	SocketService.getSearchList(function(data){
+		console.log(data);
+		$scope.search.nameList = data;
+		$timeout();
+	});
 	
 })

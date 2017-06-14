@@ -27,47 +27,49 @@ angular.module('ChatApp')
 	};
 })
 
-.service('ChatService',function($http,$rootScope){
-	var ChatService=this;
-
-	ChatService.getNameList = function(searchField){
-		return $http.get('/api/search',{params:{searchField:searchField}});
-	}
-
-})
-
 .service('SocketService',function($http,$rootScope,$location){
 	var SocketService=this;
-
-	var socket={on: function(){},emit: function(){}};
+	var socket;
 	
-	SocketService.sendMessage;
-	SocketService.newMessage;
+	//var socket={on: function(){},emit: function(){}};
+	
+	//SocketService.sendMessage;
+	//SocketService.newMessage;
 	
 	SocketService.initSocket = function(){
 		if(! $rootScope.user){
 			$location.path('/');
 			return false;
 		}
-		else{
-			socket = io.connect();
-			socket.emit('socket-init',{id: $rootScope.user});
-			
-			SocketService.sendMessage = function(message){
-				message.sentBy = $rootScope.user;
+		socket = io.connect();
+		socket.emit('socket-init',{id: $rootScope.user});
 		
-				socket.emit('message',message);
-			};
+		SocketService.sendMessage = function(message){
+			message.sentBy = $rootScope.user;
 	
-			SocketService.newMessage = function(callback){
-				if(callback){
-					socket.on('message',callback);
-				}
-			};
-			
-			return true;
-		}
-	};
-	
+			socket.emit('message',message);
+		};
 
+		SocketService.newMessage = function(callback){
+			if(callback){
+				socket.on('message',callback);
+			}
+		};
+		
+		SocketService.sendSearchRequest = function(searchField){
+			socket.emit('search',{
+				id: $rootScope.user, 
+				searchField: searchField
+			});
+		}
+		
+		SocketService.getSearchList = function(callback){
+			if(callback){
+				console.log('got search');
+				socket.on('search',callback);
+			}
+		};
+		
+		return true;
+	};
 })
