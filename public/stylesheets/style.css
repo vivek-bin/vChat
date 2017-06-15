@@ -11,14 +11,16 @@ body{
 	position: relative;
 	top: 1%;
 	left: 4%;
-	width: 90%;
+	width: 16%;
 	border-radius: 0.3em;
-	font-size: 4em;
+	font-size: 5em;
 	color: #000;
 	padding: 0.1em;
 	text-shadow: 0 0 0.2em #000;
 	background-color: #eef;
-	box-shadow: 0 0 5em #114, inset 0 0 0.2em #559;
+	box-shadow: 0 0 9em #114, inset 0 0 0.2em #559;
+	text-align: center;
+	margin: 0 auto;
 }
 
 .login,.register{
@@ -31,6 +33,7 @@ body{
 	border-color: #88e;
 	border-width: 1px;
 	box-shadow: 0 0 1em #666, inset 0 0 1em #444;
+	background: rgba(255, 255, 255, 0.4);
 }
 .login{
 	left: 25%;
@@ -162,9 +165,11 @@ button{
 	margin: 2%;
 	background-color: #123;
 	overflow: hidden;
+	border-radius: 10px;
 }
 .user-textbox{
 	left: 27%;
+	text-align: right;
 }
 .textbox-timebox{
 	font-size: 0.6em;
@@ -175,4 +180,5 @@ button{
 	font-size: 1em;
 	text-align: center;
 	border-radius: 1em;
+	background-color: #333;
 }
