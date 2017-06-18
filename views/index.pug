@@ -1,14 +1,14 @@
 
 div(class="login") 
-  form
-    input(type="text" class="input-field" placeholder="Username" maxlength="12" ng-model="existingUser.usn" autofocus)
-    input(type="password" class="input-field" placeholder="Password" maxlength="16" ng-model="existingUser.pwd" ng-keyup="$event.keyCode == 13 ? signIn() : null") 
+  form(name="user" id="user")
+    input(type="text" name="username" id="username"  class="input-field" placeholder="Username" maxlength="12" ng-model="existingUser.usn" autofocus)
+    input(type="password" name="pass" id="pass"  class="input-field" placeholder="Password" maxlength="16" ng-model="existingUser.pwd" ng-keyup="$event.keyCode == 13 ? signIn() : null") 
     button(type="button" ng-click = "signIn()") Sign In!
     div(class="error-field") {{ existingUser.err }}
 div(class="register") 
-  form
-    input(type="text" class="input-field" placeholder="Username" maxlength="12" ng-model="newUser.usn") 
-    input(type="password" class="input-field" placeholder="Password" maxlength="16" ng-model="newUser.pwd") 
-    input(type="password" class="input-field" placeholder="Confirm Password" maxlength="16" ng-model="newUser.pwd2" ng-keyup="$event.keyCode == 13 ? signUp() : null") 
+  form(name="newuser" id="newuser" autocomplete="off")
+    input(type="text" name="newusername" id="newusername" class="input-field" placeholder="Username" maxlength="12" ng-model="newUser.usn" autocomplete="off") 
+    input(type="password" name="newpass" id="newpass"  class="input-field" placeholder="Password" maxlength="16" ng-model="newUser.pwd" autocomplete="off") 
+    input(type="password" name="newpass2" id="newpass2"  class="input-field" placeholder="Confirm Password" maxlength="16" ng-model="newUser.pwd2" ng-keyup="$event.keyCode == 13 ? signUp() : null" autocomplete="off")
     button(type="button" ng-click = "signUp()") Sign Up!
     div(class="error-field") {{ newUser.err }}

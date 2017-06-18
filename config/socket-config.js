@@ -22,7 +22,7 @@ module.exports = function(io){
 				}
 			});
 			if(connectedUsers[data.sentTo]){
-				io.to(connectedUsers[data.sentTo]).emit('message',data);
+				io.to(connectedUsers[data.sentTo]).emit('message',[data]);
 			}
 		});
 

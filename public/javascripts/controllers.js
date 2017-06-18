@@ -115,15 +115,17 @@ angular.module('ChatApp')
 	};
 
 	SocketService.newMessage(function(data){
-		createChat(data.sentBy);
-		if(data.sentBy != $scope.currentChatId){
-			$scope.chats[data.sentBy].messageWaiting = true;
+		for(var i =0; i<data.length;i++){
+			createChat(data[i].sentBy);
+			if(data[i].sentBy != $scope.currentChatId){
+				$scope.chats[data[i].sentBy].messageWaiting = true;
+			}
+			$scope.chats[data[i].sentBy].messages.push({
+				messageText: data[i].message,
+				sentAt: getTimeStamp(data[i].sentAt),
+				sentByUser: false
+			});
 		}
-		$scope.chats[data.sentBy].messages.push({
-			messageText: data.message,
-			sentAt: getTimeStamp(data.sentAt),
-			sentByUser: false
-		});
 		$timeout();
 	});
 
