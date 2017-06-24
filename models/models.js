@@ -10,7 +10,8 @@ mongoose.model('Message', new mongoose.Schema({
 mongoose.model('User', new mongoose.Schema({
 	username: String,
 	password: String, //hash created from password
-	created_at: {type: Date, default: Date.now}
+	created_at: {type: Date, default: Date.now},
+	last_seen: Date
 }));
 
 //utility functions

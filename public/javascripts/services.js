@@ -19,7 +19,7 @@ angular.module('ChatApp')
 	};
 	LoginService.userAuthenticated = function(user){
 		if(user){
-			$rootScope.user=user.username;
+			$rootScope.user=user;
 			$location.path('/chat');
 			return true;
 		}
@@ -31,23 +31,27 @@ angular.module('ChatApp')
 	var SocketService=this;
 	var socket;
 	
-	//var socket={on: function(){},emit: function(){}};
-	
-	//SocketService.sendMessage;
-	//SocketService.newMessage;
-	
 	SocketService.initSocket = function(){
 		if(! $rootScope.user){
 			$location.path('/');
 			return false;
 		}
 		socket = io.connect();
-		socket.emit('socket-init',{id: $rootScope.user});
+		socket.emit('socket-init',{user: $rootScope.user});
 		
 		SocketService.sendMessage = function(message){
-			message.sentBy = $rootScope.user;
+			message.sentBy = $rootScope.user.username;
 	
 			socket.emit('message',message);
+		};
+		
+		SocketService.loadPrevious = function(chatterUsername, topMessageSentAt){
+			message.sentBy = $rootScope.user.username;
+	
+			socket.emit('loadPrevious',{
+				username: [$rootScope.user.username,chatterUsername],
+				time: topMessageSentAt
+			});
 		};
 
 		SocketService.newMessage = function(callback){
@@ -58,15 +62,24 @@ angular.module('ChatApp')
 		
 		SocketService.sendSearchRequest = function(searchField){
 			socket.emit('search',{
-				id: $rootScope.user, 
+				username: $rootScope.user.username, 
 				searchField: searchField
 			});
 		}
 		
 		SocketService.getSearchList = function(callback){
 			if(callback){
-				console.log('got search');
 				socket.on('search',callback);
+			}
+		};
+		
+		SocketService.refreshStatus = function(usernames){
+			socket.emit('refreshStatus',usernames);
+		}
+		
+		SocketService.getStatus = function(callback){
+			if(callback){
+				socket.on('refreshStatus',callback);
 			}
 		};
 		

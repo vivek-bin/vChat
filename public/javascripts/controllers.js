@@ -107,7 +107,10 @@ angular.module('ChatApp')
 		};
 		$scope.chats[chatMessage.sentTo].messages.push({
 			messageText: chatMessage.message,
-			sentAt: getTimeStamp(chatMessage.sentAt),
+			sentAt: {
+					globalTime: chatMessage.sentAt,
+					localTimeStamp: getTimeStamp(chatMessage.sentAt)
+				},
 			sentByUser: true
 		});
 		$scope.inputMessage = "";
@@ -120,11 +123,20 @@ angular.module('ChatApp')
 			if(data[i].sentBy != $scope.currentChatId){
 				$scope.chats[data[i].sentBy].messageWaiting = true;
 			}
-			$scope.chats[data[i].sentBy].messages.push({
+			var newMsg = {
 				messageText: data[i].message,
-				sentAt: getTimeStamp(data[i].sentAt),
+				sentAt: {
+						globalTime: data[i].sentAt,
+						localTimeStamp: getTimeStamp(data[i].sentAt)
+					},
 				sentByUser: false
-			});
+			}
+			if($scope.chats[data[i].sentBy].messages[0].sentAt.globalTime > newMsg.sentAt.globalTime){
+				$scope.chats[data[i].sentBy].messages.unshift(newMsg);
+			}
+			else{
+				$scope.chats[data[i].sentBy].messages.push(newMsg);
+			}
 		}
 		$timeout();
 	});
@@ -150,8 +162,31 @@ angular.module('ChatApp')
 		}
 	};
 	SocketService.getSearchList(function(data){
-		console.log(data);
 		$scope.search.nameList = data;
+		$timeout();
+	});
+	
+	var refreshStatus = function(){
+		var usernames=[];
+		for(var id in $scope.chats){
+			if(!$scope.chats.hasOwnProperty(id)){
+				continue;
+			}
+			usernames.push(id);
+		}
+		SocketService.refreshStatus(usernames);
+		
+		setTimeout(refreshStatus,2*60*1000);
+	}
+	setTimeout(refreshStatus,5*60*1000);
+	
+	SocketService.getStatus(function(data){
+		for(var id in data){
+			if(!data.hasOwnProperty(id)){
+				continue;
+			}
+			$scope.chats[id].status = data[id];
+		}
 		$timeout();
 	});
 	

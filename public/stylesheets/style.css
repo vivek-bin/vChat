@@ -8,19 +8,15 @@ body{
 }
 
 .heading{
-	position: relative;
-	top: 1%;
-	left: 4%;
-	width: 16%;
+	padding: 0.3em;
+	margin: 0% 35%;
 	border-radius: 0.3em;
 	font-size: 5em;
+	text-align: center;
 	color: #000;
-	padding: 0.1em;
 	text-shadow: 0 0 0.2em #000;
 	background-color: #eef;
 	box-shadow: 0 0 9em #114, inset 0 0 0.2em #559;
-	text-align: center;
-	margin: 0 auto;
 }
 
 .login,.register{
