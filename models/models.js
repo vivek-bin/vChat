@@ -4,7 +4,7 @@ mongoose.model('Message', new mongoose.Schema({
 	sentBy: String,
 	sentTo: String,
 	sentAt: {type: Date, default: Date.now},
-	text: String
+	messageText: String
 }));
 
 mongoose.model('User', new mongoose.Schema({

@@ -46,8 +46,6 @@ angular.module('ChatApp')
 		};
 		
 		SocketService.loadPrevious = function(chatterUsername, topMessageSentAt){
-			message.sentBy = $rootScope.user.username;
-	
 			socket.emit('loadPrevious',{
 				username: [$rootScope.user.username,chatterUsername],
 				time: topMessageSentAt
@@ -81,6 +79,13 @@ angular.module('ChatApp')
 			if(callback){
 				socket.on('refreshStatus',callback);
 			}
+		};
+		
+		SocketService.isLoggedInUser = function(username){
+			if($rootScope.user.username === username){
+				return true;
+			}
+			return false;
 		};
 		
 		return true;

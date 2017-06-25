@@ -105,6 +105,7 @@ angular.module('ChatApp')
 			sentTo: $scope.currentChatId,
 			sentAt: new Date().getTime()
 		};
+		$scope.inputMessage = "";
 		$scope.chats[chatMessage.sentTo].messages.push({
 			messageText: chatMessage.message,
 			sentAt: {
@@ -113,34 +114,51 @@ angular.module('ChatApp')
 				},
 			sentByUser: true
 		});
-		$scope.inputMessage = "";
 		SocketService.sendMessage(chatMessage);
 	};
 
 	SocketService.newMessage(function(data){
 		for(var i =0; i<data.length;i++){
-			createChat(data[i].sentBy);
-			if(data[i].sentBy != $scope.currentChatId){
-				$scope.chats[data[i].sentBy].messageWaiting = true;
-			}
 			var newMsg = {
-				messageText: data[i].message,
+				messageText: data[i].messageText,
 				sentAt: {
 						globalTime: data[i].sentAt,
 						localTimeStamp: getTimeStamp(data[i].sentAt)
 					},
 				sentByUser: false
 			}
-			if($scope.chats[data[i].sentBy].messages[0].sentAt.globalTime > newMsg.sentAt.globalTime){
-				$scope.chats[data[i].sentBy].messages.unshift(newMsg);
+			var id = data[i].sentBy;
+			if(SocketService.isLoggedInUser(id)){	//check for loading prev messages by current user
+				id = data[i].sentTo;
+				newMsg.sentByUser = true;
+			}
+			createChat(id);
+			if(id!= $scope.currentChatId){
+				$scope.chats[id].messageWaiting = true;
+			}
+			console.log(Date(newMsg.sentAt.globalTime).getTime());
+			if($scope.chats[id].messages[0] && $scope.chats[id].messages[0].sentAt.globalTime > newMsg.sentAt.globalTime){
+				$scope.chats[id].messages.unshift(newMsg);
 			}
 			else{
-				$scope.chats[data[i].sentBy].messages.push(newMsg);
+				$scope.chats[id].messages.push(newMsg);
 			}
 		}
 		$timeout();
 	});
 
+	$scope.loadPrevious = function(){
+		var id = $scope.currentChatId;
+		var time = Date.now();
+		if($scope.chats[id].messages && $scope.chats[id].messages[0]){
+			time = $scope.chats[id].messages[0].sentAt.globalTime;
+		}
+		if(id){
+			SocketService.loadPrevious(id,time);
+		}
+		
+	}
+	
 	var searchAvailable = true;
 	$scope.search = {
 		nameList: {},

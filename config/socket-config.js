@@ -18,7 +18,7 @@ module.exports = function(io){
 		
 		socket.on('message',function(data){
 			var newMessage = new Message();
-			newMessage.message = data.message;
+			newMessage.messageText = data.message;
 			newMessage.sentBy = data.sentBy;
 			newMessage.sentTo = data.sentTo;
 			newMessage.sentAt = data.sentAt;
@@ -33,17 +33,17 @@ module.exports = function(io){
 			}
 		});
 		
-		socket.on("loadPrevious",function(data){
-			var query = {$or: [{sentBy: data.username(0), sentTo: data.username(1), sentAt: { $lt: data.time}}, 
-							   {sentBy: data.username(1), sentTo: data.username(0), sentAt: { $lt: data.time}}]};
+		socket.on('loadPrevious',function(data){
+			var query = {$or: [{sentBy: data.username[0], sentTo: data.username[1], sentAt: { $lt: data.time}}, 
+							   {sentBy: data.username[1], sentTo: data.username[0], sentAt: { $lt: data.time}}]};
 			Message.find(query,function(err,data){
 				if(err){
-					console.log("error getting previous messages " + err);
+					console.log('error getting previous messages ' + err);
 					return;
 				}
 				io.to(socket.id).emit('message',data);
 			})
-			.sort("-sentAt")
+			.sort('-sentAt')
 			.limit(15);
 		});
 
@@ -69,7 +69,7 @@ module.exports = function(io){
 		});
 		
 		socket.on('refreshStatus',function(data){
-			var statuses;
+			var statuses={};
 			
 			for(var i=0;i<data.length;++i){
 				statuses[data[i]] = 0;
@@ -86,12 +86,12 @@ module.exports = function(io){
 					continue;
 				}
 				if(connectedUsers[id]===socket.id){
-					User.findOneAndUpdate({ username : id }, { last_seen : Date.now() }, function(err,data){}
+					User.findOneAndUpdate({ username : id }, { last_seen : Date.now() }, function(err,data){
 						if(err){
 							console.log("error while updating last seen " + err);
 							return;
 						}
-					);
+					});
 					connectedUsers[id]=undefined;
 					break;
 				}
