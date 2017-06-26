@@ -136,8 +136,8 @@ angular.module('ChatApp')
 			if(id!= $scope.currentChatId){
 				$scope.chats[id].messageWaiting = true;
 			}
-			console.log(Date(newMsg.sentAt.globalTime).getTime());
-			if($scope.chats[id].messages[0] && $scope.chats[id].messages[0].sentAt.globalTime > newMsg.sentAt.globalTime){
+			
+			if ($scope.chats[id].messages[0] && (new Date($scope.chats[id].messages[0].sentAt.globalTime).getTime() > new Date(newMsg.sentAt.globalTime).getTime())){
 				$scope.chats[id].messages.unshift(newMsg);
 			}
 			else{

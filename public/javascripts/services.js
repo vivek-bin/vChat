@@ -17,6 +17,13 @@ angular.module('ChatApp')
 			console.log('AJAX failed during signout');
 		});
 	};
+	LoginService.alreadySignedInCheck = function(){
+		$http.get('/users/success').then(function(res){
+			LoginService.userAuthenticated(res.data.user);
+		},function(err){
+			console.log('error checking persistant sign in');
+		});
+	}
 	LoginService.userAuthenticated = function(user){
 		if(user){
 			$rootScope.user=user;

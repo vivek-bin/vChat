@@ -4,19 +4,12 @@ var router = express.Router();
 module.exports = function(passport){
 	//sends successful login state back to angular
 	router.get('/success', function(req, res){
-		var user;
-		if(req.user){
-			user = {
-				username : req.user.username,
-				last_seen: req.user.last_seen
-			}
-		}
-		res.send({state: 'success', user: user, message: "Authentication Successful!"});
+		res.send({state: 'success', user: req.user?{username : req.user.username}:null, message: 'Authentication Successful!'});
 	});
 
 	//sends failure login state back to angular
 	router.get('/failure', function(req, res){
-		res.send({state: 'failure', user: null, message: "Invalid username or password"});
+		res.send({state: 'failure', user: null, message: 'Invalid username or password'});
 	});
 
 	//sign in
@@ -36,6 +29,8 @@ module.exports = function(passport){
 		req.logout();
 		res.redirect('/');
 	});
+	
+	
 
 	return router;
 };

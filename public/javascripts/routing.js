@@ -5,7 +5,12 @@ angular.module('ChatApp')
 	$routeProvider
 	.when('/',{
 		templateUrl:'views/index',
-		controller:'LoginCtrllr'
+		controller:'LoginCtrllr',
+		resolve: {
+			check: function(LoginService){
+				LoginService.alreadySignedInCheck();
+			}
+		}
 	})
 	.when('/chat',{
 		templateUrl:'views/chat',

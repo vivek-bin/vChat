@@ -18,7 +18,7 @@ module.exports = function(io){
 		
 		socket.on('message',function(data){
 			var newMessage = new Message();
-			newMessage.messageText = data.message;
+			newMessage.messageText = data.messageText;
 			newMessage.sentBy = data.sentBy;
 			newMessage.sentTo = data.sentTo;
 			newMessage.sentAt = data.sentAt;
