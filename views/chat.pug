@@ -1,6 +1,10 @@
+div(class="chat-heading") vChat
+  div(class="heading-logout-area")
+    div   {{ user.username }}
+    div(class="signout-button" ng-click = "signOut()") Sign Out!
 div
   div(class="chatter-list") 
-    div(ng-repeat="(username,chat) in chats" ng-class="username == currentChatId ? 'chatter-current' : 'chatter'" ng-click="switchChat(username)") 
+    div(ng-repeat="(username,chat) in chats" ng-class="chatterStatus(username)" ng-click="switchChat(username)") 
       div {{  username  }}
       div(class="chatter-close" ng-click="closeChat(username)")
       div(ng-show="chat.messageWaiting" class="chatter-waiting") 〈
@@ -9,7 +13,8 @@ div
     div(class="load-earlier-button" ng-click="loadPrevious()") Load Earlier Messages
     div(ng-repeat="message in chats[currentChatId].messages" ng-class="message.sentByUser ? 'user-textbox' : 'chatter-textbox'") {{ message.messageText }}
        div(class="textbox-timebox") {{ message.sentAt.localTimeStamp }}
-       div(id="chat-bottom")
+    div(id="chat-bottom") 
+       hr
   form
     input(type="submit" style="display: none")
     textarea(class="chat-input" placeholder="..." maxlength="200" autofocus ng-model="inputMessage" ng-keyup="$event.keyCode == 13 ? sendMessage() : null")

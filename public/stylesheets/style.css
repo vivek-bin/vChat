@@ -7,8 +7,8 @@ body{
 	background-size: 12%;
 }
 
-.heading{
-	padding: 0.3em;
+.index-heading{
+	padding: 0.2em;
 	margin: 0% 35%;
 	border-radius: 0.3em;
 	font-size: 5em;
@@ -17,6 +17,28 @@ body{
 	text-shadow: 0 0 0.2em #000;
 	background-color: #eef;
 	box-shadow: 0 0 9em #114, inset 0 0 0.2em #559;
+}
+
+.chat-heading{
+	padding: 0.1em 0.5em;
+	margin: 0% 10%;
+	border-radius: 0.3em;
+	font-size: 4em;
+	color: #000;
+	text-shadow: 0 0 0.2em #000;
+	background-color: #eef;
+	box-shadow: 0 0 9em #114, inset 0 0 0.2em #559;
+}
+
+.heading-logout-area{
+	position: absolute;
+	top: 2%;
+	right: 12%;
+	padding: 0;
+	margin: 0%;
+	font-size: 0.35em;
+	color: #000;
+	align: center;
 }
 
 .login,.register{
@@ -62,6 +84,17 @@ button{
 	margin: 5% 0 0 0;
 	cursor: pointer;
 }
+.signout-button{
+	background-color: #bbf;
+	border: none;
+	font-size: 1.2em;
+	padding: 0.2em;
+	margin: 5% 0 0 0;
+	cursor: pointer;
+	border: 15px;
+	border-color: 448;
+	border-radius: 0.3em;
+}
 
 .chatter-list{
 	position: absolute;
@@ -74,7 +107,7 @@ button{
 	overflow-x: hidden;
 	overflow-y: auto;
 }
-.chatter,.chatter-current{
+.chatter,.chatter-current,.chatter-online{
 	position: relative;
 	height: 8%;
 	padding-top: 10%;
@@ -84,9 +117,11 @@ button{
 	user-select: none;
 	cursor: pointer;
 }
-
 .chatter-current{
 	background-color: #ea0;
+}
+.chatter-online{
+	background-color: #0a0;
 }
 
 .chatter-waiting{

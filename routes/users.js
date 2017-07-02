@@ -4,7 +4,7 @@ var router = express.Router();
 module.exports = function(passport){
 	//sends successful login state back to angular
 	router.get('/success', function(req, res){
-		res.send({state: 'success', user: req.user?{username : req.user.username}:null, message: 'Authentication Successful!'});
+		res.send({state: 'success', user: req.user?{username : req.user.username,last_seen: req.user.last_seen}:null, message: 'Authentication Successful!'});
 	});
 
 	//sends failure login state back to angular

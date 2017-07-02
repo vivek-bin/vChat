@@ -9,7 +9,7 @@ module.exports = function(io){
 			connectedUsers[data.user.username] = socket.id;
 			Message.find({sentTo: data.user.username, sentAt: {$gt: data.user.last_seen}},function(err,data){
 				if(err){
-					console.log("error sent new messages since last logout " + err)
+					console.log("error sending new messages since last logout " + err)
 					return;
 				}
 				io.to(socket.id).emit('message',data);

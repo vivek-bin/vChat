@@ -24,10 +24,6 @@ angular.module('ChatApp')
 		});
 	};
 	
-	$scope.signOut=function(){
-		LoginService.signOut();
-	};
-	
 	$scope.signUp=function(){
 		if($scope.newUser.usn.length<3){
 			return $scope.newUser.err="Username too short";
@@ -50,33 +46,26 @@ angular.module('ChatApp')
 	};
 })
 
-.controller('ChatCtrllr',function($scope,$timeout,SocketService){
-	if(! SocketService.initSocket()){
-		return this;
-	}
-	
-	var createChat = function(username){
-		if($scope.chats[username]){
-			return false;
-		}
-		$scope.chats[username]={
-			messages: [],
-			status: 0, 
-			messageWaiting: false
-		};
-		return true;
-	};
-	
-	var getTimeStamp = function(time){
-		var newDate = new Date(time);
-		var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-		var timeStamp = monthNames[newDate.getMonth()] + ' ' + newDate.getDate() + ', ' + newDate.getHours() + ':' + newDate.getMinutes() + ':' + newDate.getSeconds();
-		return timeStamp;
-	};
+.controller('ChatCtrllr',function($scope,$timeout,SocketService,ChatService){
+	SocketService.initSocket();
 	
 	$scope.inputMessage = "";
 	$scope.currentChatId = "";
 	$scope.chats = {};
+	
+	$scope.signOut = function(){
+		ChatService.signOut();
+	};
+	
+	var createChat = function(username){
+		if(! $scope.chats[username]){
+			$scope.chats[username] = {
+				messages: [],
+				status: 0, 
+				messageWaiting: false
+			};
+		}
+	};
 	
 	$scope.switchChat = function(username){
 		$scope.currentChatId = username;
@@ -96,21 +85,20 @@ angular.module('ChatApp')
 	};
 	
 	$scope.sendMessage = function(){
-		if($scope.inputMessage === "" || $scope.currentChatId === ""){
-			$scope.inputMessage = "";
-			return;
-		}
 		var chatMessage = {
-			message: $scope.inputMessage,
+			messageText: $scope.inputMessage,
 			sentTo: $scope.currentChatId,
 			sentAt: new Date().getTime()
 		};
 		$scope.inputMessage = "";
+		if(chatMessage.messageText === "" || chatMessage.sentTo === ""){
+			return;
+		}
 		$scope.chats[chatMessage.sentTo].messages.push({
-			messageText: chatMessage.message,
+			messageText: chatMessage.messageText,
 			sentAt: {
 					globalTime: chatMessage.sentAt,
-					localTimeStamp: getTimeStamp(chatMessage.sentAt)
+					localTimeStamp: ChatService.getTimeStamp(chatMessage.sentAt)
 				},
 			sentByUser: true
 		});
@@ -123,7 +111,7 @@ angular.module('ChatApp')
 				messageText: data[i].messageText,
 				sentAt: {
 						globalTime: data[i].sentAt,
-						localTimeStamp: getTimeStamp(data[i].sentAt)
+						localTimeStamp: ChatService.getTimeStamp(data[i].sentAt)
 					},
 				sentByUser: false
 			}
@@ -156,7 +144,6 @@ angular.module('ChatApp')
 		if(id){
 			SocketService.loadPrevious(id,time);
 		}
-		
 	}
 	
 	var searchAvailable = true;
@@ -184,6 +171,16 @@ angular.module('ChatApp')
 		$timeout();
 	});
 	
+	$scope.chatterStatus = function(username){
+		if(username === $scope.currentChatId){
+			return 'chatter-current';
+		}
+		if($scope.chats[username].status === 1){
+			return 'chatter-online';
+		}
+		return 'chatter';
+	}
+	
 	var refreshStatus = function(){
 		var usernames=[];
 		for(var id in $scope.chats){
@@ -196,7 +193,7 @@ angular.module('ChatApp')
 		
 		setTimeout(refreshStatus,2*60*1000);
 	}
-	setTimeout(refreshStatus,5*60*1000);
+	setTimeout(refreshStatus,2*60*1000);
 	
 	SocketService.getStatus(function(data){
 		for(var id in data){

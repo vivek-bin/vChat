@@ -39,10 +39,6 @@ angular.module('ChatApp')
 	var socket;
 	
 	SocketService.initSocket = function(){
-		if(! $rootScope.user){
-			$location.path('/');
-			return false;
-		}
 		socket = io.connect();
 		socket.emit('socket-init',{user: $rootScope.user});
 		
@@ -94,7 +90,26 @@ angular.module('ChatApp')
 			}
 			return false;
 		};
-		
-		return true;
+	};
+})
+
+.service('ChatService',function($http,$rootScope,$location){
+	var ChatService=this;
+	
+	ChatService.getTimeStamp = function(time){
+		var newDate = new Date(time);
+		var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+		var timeStamp = monthNames[newDate.getMonth()] + ' ' + newDate.getDate() + ', ' + newDate.getHours() + ':' + newDate.getMinutes() + ':' + newDate.getSeconds();
+		return timeStamp;
+	};
+	
+	ChatService.signOut = function(){
+		$http.get('/users/signout')
+		.then(function(res){
+			$rootScope.user=undefined;
+			$location.path('/');
+		},function(error){
+			console.log('AJAX failed during signout');
+		});
 	};
 })
