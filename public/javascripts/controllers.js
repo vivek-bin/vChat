@@ -70,6 +70,7 @@ angular.module('ChatApp')
 	$scope.switchChat = function(username){
 		$scope.currentChatId = username;
 		$scope.chats[username].messageWaiting = false;
+		ChatService.scrollToBottom();
 	};
 	
 	$scope.newChat = function(username){
@@ -102,10 +103,12 @@ angular.module('ChatApp')
 				},
 			sentByUser: true
 		});
+		ChatService.scrollToBottom();
 		SocketService.sendMessage(chatMessage);
 	};
 
 	SocketService.newMessage(function(data){
+		var scrollBottomFlag = false;
 		for(var i =0; i<data.length;i++){
 			var newMsg = {
 				messageText: data[i].messageText,
@@ -121,18 +124,26 @@ angular.module('ChatApp')
 				newMsg.sentByUser = true;
 			}
 			createChat(id);
-			if(id!= $scope.currentChatId){
-				$scope.chats[id].messageWaiting = true;
-			}
 			
 			if ($scope.chats[id].messages[0] && (new Date($scope.chats[id].messages[0].sentAt.globalTime).getTime() > new Date(newMsg.sentAt.globalTime).getTime())){
 				$scope.chats[id].messages.unshift(newMsg);
 			}
 			else{
 				$scope.chats[id].messages.push(newMsg);
+				scrollBottomFlag = true;
+			}
+			if(id!= $scope.currentChatId){
+				$scope.chats[id].messageWaiting = true;
+				scrollBottomFlag = false;
 			}
 		}
-		$timeout();
+		if(scrollBottomFlag){
+			$timeout(ChatService.scrollToBottom);
+		}
+		else{
+			$timeout();
+		}
+		
 	});
 
 	$scope.loadPrevious = function(){

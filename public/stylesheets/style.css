@@ -41,6 +41,34 @@ body{
 	align: center;
 }
 
+#user-menu{
+	text-align: center;
+	background-color: #bbf;
+	border: none;
+	font-size: 1.2em;
+	padding: 0.5em;
+	margin: 5% 0 0 0;
+	border: 15px;
+	border-color: 448;
+	border-radius: 0.1em;
+}
+
+#logout-area{
+	cursor: pointer;
+	display: none;
+}
+#user-id{
+	display: block;
+}
+
+#user-menu:hover > #user-id {
+	display: none;
+}
+
+#user-menu:hover > #logout-area {
+	display: block;
+}
+
 .login,.register{
 	position: absolute;
 	top: 25%;
@@ -83,17 +111,6 @@ button{
 	padding: 0.5em;
 	margin: 5% 0 0 0;
 	cursor: pointer;
-}
-.signout-button{
-	background-color: #bbf;
-	border: none;
-	font-size: 1.2em;
-	padding: 0.2em;
-	margin: 5% 0 0 0;
-	cursor: pointer;
-	border: 15px;
-	border-color: 448;
-	border-radius: 0.3em;
 }
 
 .chatter-list{

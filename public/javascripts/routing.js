@@ -1,6 +1,7 @@
 angular.module('ChatApp')
-.config(['$routeProvider','$locationProvider','$animateProvider',function($routeProvider,$locationProvider,$animateProvider){
+.config(['$routeProvider','$locationProvider','$animateProvider','$anchorScrollProvider',function($routeProvider,$locationProvider,$animateProvider,$anchorScrollProvider){
 	//$animateProvider.classNameFilter(/ng-animate-enabled/)
+	$anchorScrollProvider.disableAutoScrolling();
 	
 	$routeProvider
 	.when('/',{

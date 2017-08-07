@@ -1,7 +1,9 @@
 div(class="chat-heading") vChat
   div(class="heading-logout-area")
-    div   {{ user.username }}
-    div(class="signout-button" ng-click = "signOut()") Sign Out!
+    div(id="user-menu")
+      div(id="user-id")   {{ user.username.toUpperCase(); }}
+      div(id="logout-area") 
+        div(class="signout-button" ng-click = "signOut()") Sign Out!
 div
   div(class="chatter-list") 
     div(ng-repeat="(username,chat) in chats" ng-class="chatterStatus(username)" ng-click="switchChat(username)") 

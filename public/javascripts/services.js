@@ -34,7 +34,7 @@ angular.module('ChatApp')
 	};
 })
 
-.service('SocketService',function($http,$rootScope,$location){
+.service('SocketService',function($http,$rootScope,$location,$anchorScroll){
 	var SocketService=this;
 	var socket;
 	
@@ -93,7 +93,7 @@ angular.module('ChatApp')
 	};
 })
 
-.service('ChatService',function($http,$rootScope,$location){
+.service('ChatService',function($http,$window,$rootScope,$location,$timeout,$anchorScroll){
 	var ChatService=this;
 	
 	ChatService.getTimeStamp = function(time){
@@ -101,6 +101,12 @@ angular.module('ChatApp')
 		var monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 		var timeStamp = monthNames[newDate.getMonth()] + ' ' + newDate.getDate() + ', ' + newDate.getHours() + ':' + newDate.getMinutes() + ':' + newDate.getSeconds();
 		return timeStamp;
+	};
+	
+	ChatService.scrollToBottom = function(){
+		$timeout(function(){
+			$anchorScroll('chat-bottom')
+		});
 	};
 	
 	ChatService.signOut = function(){
