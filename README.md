@@ -1,3 +1,5 @@
+![Chat](screenshots/s1.jpg?raw=true "Chat")
+
 # vChat
 
 This is a straightforward chatting web app built on the MEAN stack.
@@ -17,3 +19,8 @@ Sign up in a moment, and start chatting. Your previous chat is remembered, if u 
 3. Start the server: `npm start`
 4. View in browser at `http://localhost:8081`
 
+![](screenshots/s1.jpg?raw=true)
+
+![](screenshots/s2.jpg?raw=true)
+
+![](screenshots/s3.jpg?raw=true)
